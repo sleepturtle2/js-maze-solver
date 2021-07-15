@@ -1,0 +1,8 @@
+Bug Fixes:
+1. highlights all redundant boxes to the right. does not always show the shortest path
+
+Features:
+
+1. Option to choose from a variety of algorithms and implementations
+2. User defined grid sizes
+3. User defined start and finish boxes
