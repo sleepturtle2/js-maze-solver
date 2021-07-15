@@ -23,31 +23,34 @@ function isSafe(x, y) {
 }
 
 function print(a) {
-  for (i = 0; i < a.length; i++)
-    console.log(...a[i]);
+  for (i = 0; i < a.length; i++){
+    for (j = 0; j < a[0].length; j++)
+      document.write(" " + a[i][j].state + " ");
+    document.write("<br>");
+  }
 }
 
-function solveMazeUtil(x, y, sol) {
+function solveMazeUtil(x, y, tiles) {
   if (x == end_x && y == end_y) {
-    sol[x][y] = 1;
+    //tiles[x][y].state = 'x';
     return true;
   }
 
   if (isSafe(x, y) == true) {
     console.log(x, y);
-    if (sol[x][y] == 1) return false;
+    if (tiles[x][y].state == 'v' || tiles[x][y].state == 'i') return false;
 
-    sol[x][y] = 1;
+    tiles[x][y].state = 'v';
 
-    if (solveMazeUtil(x + 1, y, sol) == true)
+    if (solveMazeUtil(x + 1, y, tiles) == true)
       return true;
-    else if (solveMazeUtil(x - 1, y, sol) == true) return true;
+    else if (solveMazeUtil(x - 1, y, tiles) == true) return true;
 
-    else if (solveMazeUtil(x, y - 1, sol) == true) return true;
+    else if (solveMazeUtil(x, y - 1, tiles) == true) return true;
 
-    else if (solveMazeUtil(x, y + 1, sol) == true) return true;
+    else if (solveMazeUtil(x, y + 1, tiles) == true) return true;
 
-    sol[x][y] = 0;
+    tiles[x][y].state = 'i'; // visited but incorrect, ie cannot be part of solution
     return false;
   }
   return false;
@@ -57,33 +60,33 @@ function backtrack(sol) {
   x = end_x; y = end_y;
   //tiles[x][y].state = 'x';
 
-  sol[x][y] = 0;
+  tiles[x][y].state = 'f';
 
   while (x != 0 && y != 0) {
     //check up
-    if (isSafe(x - 1, y) && sol[x - 1][y] == 1) {
-      sol[x - 1][y] = 0;
+    if (isSafe(x - 1, y) && tiles[x - 1][y].state == 'v') {
+      tiles[x - 1][y].state = 'x';
       x = x - 1;
-
+      continue;
     }
     //check down
-    else if (isSafe(x + 1, y) && sol[x + 1][y] == 1) {
-      sol[x + 1][y] = 0;
+    else if (isSafe(x + 1, y) && tiles[x + 1][y].state == 'v') {
+      tiles[x + 1][y].state = 'x';
       x = x + 1;
-
+      continue;
     }
     //check right
-    else if (isSafe(x, y + 1) && sol[x][y + 1] == 1) {
-      sol[x][y + 1] = 0;
+    else if (isSafe(x, y + 1) && tiles[x][y + 1].state == 'v') {
+      tiles[x][y + 1].state = 'x';
       y = y + 1;
-
+      continue;
     }
-    else if (isSafe(x, y - 1) && sol[x][y - 1] == 1) {
-      sol[x][y - 1] = 0;
+    else if (isSafe(x, y - 1) && tiles[x][y - 1].state == 'v') {
+      tiles[x][y - 1].state = 'x';
       y = y - 1;
-
+      continue;
     }
-    tiles[x][y].state = 'x';
+
   }
 }
 
@@ -100,11 +103,11 @@ function solveMaze() {
       sol[i][j] = 0;
    //console.log(sol.length, sol[0].length);
 
-  if (solveMazeUtil(0, 0, sol) == false)
+  if (solveMazeUtil(0, 0, tiles) == false)
     console.log("no output");
   else {
-    print(sol);
-    backtrack(sol);
+    //print(tiles);
+    backtrack(tiles);
   }
 
 }
