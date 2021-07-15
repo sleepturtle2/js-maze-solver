@@ -14,7 +14,9 @@ var boundY = 0;
 var tiles = [];
 
 function solveMaze() {
-
+  for (c = 0; c < tileColumnCount; c++)
+    for (r = 0; r < tileRowCount; r++)
+      console.log(tiles[c][r].state);
 }
 
 
