@@ -9,6 +9,7 @@ var row = grid.length;
 var col = grid[0].length;
 var end_x = row-1;
 var end_y = col - 1;
+
 function isSafe(x, y) {
   if (x >= 0 && x < row && y >= 0 && y < col  && grid[x][y] == 1) return true;
   return false;
