@@ -11,36 +11,15 @@
     <link rel="stylesheet" href="index.css">
     <title>maze solver</title>
 </head>
-<style>
-    .outer-container {
-        display: grid;
-        grid-template-columns: 1fr;
-        justify-content: center;
-        text-align: center;
-        background-color: aqua;
-    }
-    
-    .inner-container {
-        background-color: green;
-        width: 90%;
-        margin: auto;
-    }
-    
-    @media screen and (min-width: 800px) {
-        .outer-container {
-            width: 70%;
-        }
-    }
-</style>
 
-<body class="">
+<body class="bg-dark">
 
     <div class="outer-container">
         <canvas class="inner-container" id="myCanvas" width="800" height="500"></canvas>
         <div class="button-container">
             <button class="btn btn-success m-3" onClick="bfs()">Solve</button>
             <button class="btn btn-primary m-3" onClick="reset()">Reset</button>
-            <p class="outcome-container" id="outcome"></p>
+            <p id="outcome"></p>
 
         </div>
     </div>
