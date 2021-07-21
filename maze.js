@@ -6,8 +6,8 @@ const HEIGHT = 600;
 
 var tileW = 20;
 var tileH = 20;
-var tileRowCount = 20;
-var tileColumnCount = 25;
+var tileRowCount = 21;
+var tileColumnCount = 35;
 var tiles;
 
 var boundX = 0;
@@ -32,85 +32,85 @@ function isSafe(x, y) {
 //----------------------------//
 
 
-//----------NAIVE------------------//
+// //----------NAIVE------------------//
 
 
-function print(a) {
-    var str;
-    for (i = 0; i < a.length; i++) {
-        for (j = 0; j < a[0].length; j++)
-            str += a[i][j].state + " ";
-        console.log(str);
-        str = "";
-    }
-}
+// function print(a) {
+//     var str;
+//     for (i = 0; i < a.length; i++) {
+//         for (j = 0; j < a[0].length; j++)
+//             str += a[i][j].state + " ";
+//         console.log(str);
+//         str = "";
+//     }
+// }
 
-function solveMazeUtil(x, y, sol) {
-    if (x == end_x && y == end_y && tiles[x][y].state == 'f') {
-        sol[x][y] = 1;
-        steps++;
-        return true;
-    }
+// function solveMazeUtil(x, y, sol) {
+//     if (x == end_x && y == end_y && tiles[x][y].state == 'f') {
+//         sol[x][y] = 1;
+//         steps++;
+//         return true;
+//     }
 
-    if (isSafe(x, y) === true) {
+//     if (isSafe(x, y) === true) {
 
-        // Check if the current block is already part of solution path.
-        if (sol[x][y] === 1) return false;
-        console.log(x, y);
-        // mark x, y as part of solution path
-        sol[x][y] = 1;
-        if (tiles[x][y].state != 's')
-            tiles[x][y].state = 'x';
-        steps++;
+//         // Check if the current block is already part of solution path.
+//         if (sol[x][y] === 1) return false;
+//         console.log(x, y);
+//         // mark x, y as part of solution path
+//         sol[x][y] = 1;
+//         if (tiles[x][y].state != 's')
+//             tiles[x][y].state = 'x';
+//         steps++;
 
-        //right
-        if (solveMazeUtil(x, y + 1, sol) === true) return true;
-        //down
-        else if (solveMazeUtil(x + 1, y, sol) === true) return true;
-        //left
-        else if (solveMazeUtil(x - 1, y, sol) === true) return true;
-        //up
-        else if (solveMazeUtil(x, y - 1, sol) === true) return true;
+//         //right
+//         if (solveMazeUtil(x, y + 1, sol) === true) return true;
+//         //down
+//         else if (solveMazeUtil(x + 1, y, sol) === true) return true;
+//         //left
+//         else if (solveMazeUtil(x - 1, y, sol) === true) return true;
+//         //up
+//         else if (solveMazeUtil(x, y - 1, sol) === true) return true;
 
 
-        sol[x][y] = 0; //if all cases are false, this cell cannot be part of path
-        tiles[x][y].state = 'e';
-        steps--;
-        return false;
-    }
-    return false;
-}
+//         sol[x][y] = 0; //if all cases are false, this cell cannot be part of path
+//         tiles[x][y].state = 'e';
+//         steps--;
+//         return false;
+//     }
+//     return false;
+// }
 
-function solveMaze() {
-    let sol = new Array(tiles.length);
+// function solveMaze() {
+//     let sol = new Array(tiles.length);
 
-    //create solution maze
-    for (i = 0; i < sol.length; i++)
-        sol[i] = new Array(tiles[0].length);
-    for (i = 0; i < sol.length; i++)
-        for (j = 0; j < sol[0].length; j++)
-            sol[i][j] = 0;
-    //console.log(sol.length, sol[0].length);
+//     //create solution maze
+//     for (i = 0; i < sol.length; i++)
+//         sol[i] = new Array(tiles[0].length);
+//     for (i = 0; i < sol.length; i++)
+//         for (j = 0; j < sol[0].length; j++)
+//             sol[i][j] = 0;
+//     //console.log(sol.length, sol[0].length);
 
-    if (solveMazeUtil(0, 0, sol) == false)
-        output.innerHTML = "No solution possible!";
-    else {
-        /*
-        // print sol
-        console.log("printing solution");
+//     if (solveMazeUtil(0, 0, sol) == false)
+//         output.innerHTML = "No solution possible!";
+//     else {
+//         /*
+//         // print sol
+//         console.log("printing solution");
 
-        var str="";
-        for (i = 0; i < sol.length; i++)
-        {
-          for (j = 0; j < sol[0].length; j++)
-            str += sol[i][j];
-          console.log(str);
-          str = "";
-          }
-          */
-        output.innerHTML = "Shortest path in " + steps + " steps!";
-    }
-}
+//         var str="";
+//         for (i = 0; i < sol.length; i++)
+//         {
+//           for (j = 0; j < sol[0].length; j++)
+//             str += sol[i][j];
+//           console.log(str);
+//           str = "";
+//           }
+//           */
+//         output.innerHTML = "Shortest path in " + steps + " steps!";
+//     }
+// }
 
 //---------------BFS---------------//
 
@@ -119,8 +119,9 @@ function Point(x, y) {
     this.y = y;
 }
 
-function Node(pt, dist) {
+function Node(pt, parent, dist) {
     this.pt = pt;
+    this.parent = parent;
     this.dist = dist;
 }
 
@@ -131,87 +132,89 @@ var d = [
     { x: -1, y: 0 }
 ];
 
-function printPath(path) {
 
-    console.log("Final path: ");
-    for (var i = 0; i < path.length; i++) {
-        console.log(path[i]);
-
-        tiles[path[i].pt.x][path[i].pt.y].state = 'x';
-    }
+function isValid(R, C, row, col) {
+    return (row >= 0) && (row < R) && (col >= 0) && (col < C) && tiles[row][col].state != 'w' && tiles[row][col].state != 's'; //&& !visited[row][col];
 }
 
-function isNotVisited(row, col, path) {
-    for (let i = 0; i < path.length; i++) {
-        if (path[i].pt.x === row && path[i].pt.y === col)
-            return false;
-    }
-    return true;
-}
+function backtrack(sol, src, dest) {
+    console.log("sol array")
+    for (var i = 0; i < sol.length; i++) {
+        var str = "";
 
-function equal(newPath, path) {
-    for (var i = 0; i < path.length; i++)
-        newPath.push(path[i]);
+        for (var j = 0; j < sol[0].length; j++)
+            str += sol[i][j].parent.x + "," + sol[i][j].parent.y + "  ";
+
+        console.log(str);
+    }
+    console.log("function to backtrack");
+
+    let x = dest.x;
+    let y = dest.y;
+
+    while ((x != src.x || y != src.y)) {
+        console.log(x, y);
+        tiles[x][y].state = 'x';
+        x = sol[x][y].parent.x;
+        y = sol[x][y].parent.y;
+    }
+    console.log(x, y);
 }
 
 function bfs() {
     let pathFound = false;
-    let src = new Point(0, 0);
-    let dest = new Point(end_x, end_y);
-
-
+    var src = new Point(0, 0);
+    var dest = new Point(tileRowCount - 1, tileColumnCount - 1);
     let queue = [];
-    let path = [];
 
-    let height = tileRowCount;
-    let width = tileColumnCount;
 
-    visited = [];
-    for (var i = 0; i < height; i++) {
-        visited.push([]);
-        for (var j = 0; j < width; j++) {
-            visited[i].push(false);
+    let r = tileRowCount;
+    let c = tileColumnCount;
+    let sol = new Array(r);
+
+    for (let i = 0; i < r; i++) {
+        sol[i] = new Array(c);
+        for (let j = 0; j < c; j++) {
+            let pt = new Point(i, j);
+            let parent = new Point(-1, -1);
+            let node = new Node(pt, parent, -1);
+            sol[i][j] = node;
         }
     }
 
-    let s = new Node(src, 0);
-    path.push(s);
-    queue.push(path);
-    //visited[src.x][src.y] = true;
 
+
+    let s = new Node(new Point(src.x, src.y), new Point(-1, -1), -1);
+
+    queue.push(s);
 
     while (queue.length > 0) {
-
-        path = queue.pop();
-        let last = path[path.length - 1];
-        //console.log(last)
-        if (last.pt.x === dest.x && last.pt.y === dest.y) {
+        let curr = queue.pop();
+        //console.log(curr);
+        if (curr.pt.x == dest.x && curr.pt.y == dest.y)
             pathFound = true;
-            printPath(path);
-            //return;
-        }
 
         for (let i = 0; i < 4; i++) {
-            let row = last.pt.x + d[i].x;
-            let col = last.pt.y + d[i].y;
+            let row = curr.pt.x + d[i].x;
+            let col = curr.pt.y + d[i].y;
 
-            if (isSafe(row, col) && isNotVisited(row, col, path)) {
-                // visited[row][col] = true
-                let newPath = [];
-                equal(newPath, path);
-                let node = new Node(new Point(row, col), last.dist + 1);
-                newPath.push(node);
-                queue.push(newPath);
+            if (isValid(r, c, row, col)) {
+                if (sol[row][col].dist == -1 || sol[row][col].dist > sol[curr.pt.x][curr.pt.y].dist + 1) {
+                    sol[row][col].dist = sol[curr.pt.x][curr.pt.y].dist + 1;
+                    sol[row][col].parent.x = curr.pt.x;
+                    sol[row][col].parent.y = curr.pt.y;
+
+                    queue.push(sol[row][col]);
+                }
             }
         }
+
     }
-
-    if (!pathFound)
-        console.log("No path found");
+    if (pathFound)
+        backtrack(sol, src, dest);
+    else
+        console.log("no path found");
 }
-
-
-
 //----------------------------------//
 
 //----------------------------------------------------

@@ -16,27 +16,9 @@ var d = [
     { x: -1, y: 0 }
 ];
 
-function printPath(path) {
-
-    console.log("Final path: ");
-    console.log(path);
-}
-
-function isNotVisited(row, col, path) {
-    for (let i = 0; i < path.length; i++) {
-        if (path[i].pt.x === row && path[i].pt.y === col)
-            return false;
-    }
-    return true;
-}
 
 function isValid(maze, R, C, row, col) {
     return (row >= 0) && (row < R) && (col >= 0) && (col < C) && maze[row][col] == 1; //&& !visited[row][col];
-}
-
-function equal(newPath, path) {
-    for (var i = 0; i < path.length; i++)
-        newPath.push(path[i]);
 }
 
 function backtrack(sol, src, dest) {
