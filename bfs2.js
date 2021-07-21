@@ -38,6 +38,32 @@ function equal(newPath, path) {
         newPath.push(path[i]);
 }
 
+function bfsUtil(queue, width, height) {
+    let path = queue.pop();
+    let last = path[path.length - 1];
+
+    if (last.pt.x === dest.x && last.pt.y === dest.y) {
+        pathFound = true;
+        printPath(path);
+        return;
+    }
+
+    for (let i = 0; i < 4; i++) {
+        let row = last.pt.x + d[i].x;
+        let col = last.pt.y + d[i].y;
+
+        if (isValid(maze, width, height, row, col) && isNotVisited(row, col, path)) {
+            //visited[row][col] = true
+            let newPath = [];
+            equal(newPath, path);
+            let node = new Node(new Point(row, col), last.dist + 1);
+            newPath.push(node);
+            queue.push(newPath);
+        }
+    }
+
+}
+
 function bfs(maze, src, dest) {
     let pathFound = false;
 
@@ -65,28 +91,6 @@ function bfs(maze, src, dest) {
 
         while (queue.length > 0) {
 
-            path = queue.pop();
-            let last = path[path.length - 1];
-            console.log(last);
-            if (last.pt.x === dest.x && last.pt.y === dest.y) {
-                pathFound = true;
-                printPath(path);
-                return;
-            }
-            console.log("Start")
-            for (let i = 0; i < 4; i++) {
-                let row = last.pt.x + d[i].x;
-                let col = last.pt.y + d[i].y;
-
-                if (isValid(maze, width, height, row, col) && isNotVisited(row, col, path)) {
-                    //visited[row][col] = true
-                    let newPath = [];
-                    equal(newPath, path);
-                    let node = new Node(new Point(row, col), last.dist + 1);
-                    newPath.push(node);
-                    queue.push(newPath);
-                }
-            }
         }
     }
     if (!pathFound)
@@ -109,10 +113,5 @@ var maze = [
 ];
 
 var source = new Point(0, 0);
-var dest = new Point(7, 5);
+var dest = new Point(5, 8);
 bfs(maze, source, dest);
-
-// if (dist != -1)
-//     console.log(`The shortest path from (${source.x}, ${source.y}) to (${dest.x}, ${dest.y}) has length ${dist}\n`);
-// else
-//     console.log(`Shortest path from ${(source.x, source.y)} to ${(dest.x, dest.y)} does not exist`);

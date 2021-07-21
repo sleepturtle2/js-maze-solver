@@ -15,56 +15,85 @@ var d = [
     { x: -1, y: 0 }
 ];
 
-function bfs(maze, src, dest) {
-    var minDist = -1;
-    if (maze[src.x][src.y] != 1 || maze[dest.x][dest.y] != 1)
-        return minDist;
-    var h = maze.length;
-    var w = maze[0].length;
-    visited = [];
-    for (var i = 0; i < h; i++) {
-        visited.push([]);
-        for (var j = 0; j < w; j++) {
-            visited[i].push(false);
-        }
+function printPath(path) {
+
+    console.log("Final path: ");
+    console.log(path);
+}
+
+function isNotVisited(row, col, path) {
+    for (let i = 0; i < path.length; i++) {
+        if (path[i].pt.x === row && path[i].pt.y === col)
+            return false;
     }
-    var pathFound = false;
-    var queue = [];
-    var s = new Node(src, 0);
-    queue.push(s);
-    visited[src.x][src.y] = true;
-    while (queue.length > 0) {
-        var curr = queue.pop();
-        console.log(curr.pt.x + " " + curr.pt.y);
-        var pt = curr.pt;
-        // console.log(pt.x + " " + pt.y + " " + curr.dist);
-        if (pt.x == dest.x && pt.y == dest.y) {
-            console.log("Path 1:");
-            console.log(curr.dist);
-            queue.push(curr);
-            console.log(queue);
-            queue.pop();
-            pathFound = true;
+    return true;
+}
+
+function isValid(maze, width, height, row, col) {
+    return (row >= 0) && (row < width) && (col >= 0) && (col < height) && maze[row][col] == 1; //&& !visited[row][col];
+}
+
+function equal(newPath, path) {
+    for (var i = 0; i < path.length; i++)
+        newPath.push(path[i]);
+}
+
+function bfs(maze, src, dest) {
+    let pathFound = false;
+
+    if (maze[src.x][src.y] || maze[dest.x][dest.y]) {
+
+        let queue = [];
+        let path = [];
+
+        let height = maze.length;
+        let width = maze[0].length;
+
+        visited = [];
+        for (var i = 0; i < height; i++) {
+            visited.push([]);
+            for (var j = 0; j < width; j++) {
+                visited[i].push(false);
+            }
         }
-        for (var i = 0; i < 4; i++) {
-            var row = pt.x + d[i].x;
-            var col = pt.y + d[i].y;
-            if (isValid(maze, visited, h, w, row, col)) {
-                visited[row][col] = true;
-                var adjCell = new Node(new Point(row, col), curr.dist + 1);
-                queue.push(adjCell);
+
+        let s = new Node(src, 0);
+        path.push(s);
+        queue.push(path);
+        visited[src.x][src.y] = true;
+
+
+        while (queue.length > 0) {
+
+            path = queue.pop();
+            let last = path[path.length - 1];
+
+            if (last.pt.x === dest.x && last.pt.y === dest.y) {
+                pathFound = true;
+                printPath(path);
+                return;
+            }
+
+            for (let i = 0; i < 4; i++) {
+                let row = last.pt.x + d[i].x;
+                let col = last.pt.y + d[i].y;
+
+                if (isValid(maze, width, height, row, col) && isNotVisited(row, col, path)) {
+                    //visited[row][col] = true
+                    let newPath = [];
+                    equal(newPath, path);
+                    let node = new Node(new Point(row, col), last.dist + 1);
+                    newPath.push(node);
+                    queue.push(newPath);
+                }
             }
         }
     }
     if (!pathFound)
-        return minDist;
-    else
-        return minDist;
+        console.log("No path found");
 }
 
-function isValid(maze, visited, width, height, row, col) {
-    return (row >= 0) && (row < width) && (col >= 0) && (col < height) && maze[row][col] == 1 && !visited[row][col];
-}
+
 
 var maze = [
     [1, 1, 1, 1, 1, 0, 0, 1, 1, 1],
@@ -80,10 +109,5 @@ var maze = [
 ];
 
 var source = new Point(0, 0);
-var dest = new Point(7, 5);
-var dist = bfs(maze, source, dest);
-
-if (dist != -1)
-    console.log(`The shortest path from (${source.x}, ${source.y}) to (${dest.x}, ${dest.y}) has length ${dist}\n`);
-// else
-//     console.log(`Shortest path from ${(source.x, source.y)} to ${(dest.x, dest.y)} does not exist`);
+var dest = new Point(5, 8);
+bfs(maze, source, dest);
