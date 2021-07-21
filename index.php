@@ -1,1 +1,1 @@
-<?php include_once("maze.html"); ?>
+<?php header( 'Location: /index.html' ) ;  ?>
